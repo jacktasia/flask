@@ -133,7 +133,7 @@ class Config(dict):
                 errno.ENOENT, errno.EISDIR, errno.ENOTDIR
             ):
                 return False
-            e.strerror = 'Unable to load configuration file (%s)' % e.strerror
+            e.strerror = f"Unable to load configuration file ({e.strerror})"
             raise
         self.from_object(d)
         return True
@@ -193,7 +193,7 @@ class Config(dict):
         except IOError as e:
             if silent and e.errno in (errno.ENOENT, errno.EISDIR):
                 return False
-            e.strerror = 'Unable to load configuration file (%s)' % e.strerror
+            e.strerror = f"Unable to load configuration file ({e.strerror})"
             raise
         return self.from_mapping(obj)
 
@@ -262,4 +262,4 @@ class Config(dict):
         return rv
 
     def __repr__(self):
-        return '<%s %s>' % (self.__class__.__name__, dict.__repr__(self))
+        return f"<{self.__class__.__name__} {dict.__repr__(self)}>"

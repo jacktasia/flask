@@ -32,12 +32,7 @@ class DebugFilesKeyError(KeyError, AssertionError):
 
     def __init__(self, request, key):
         form_matches = request.form.getlist(key)
-        buf = ['You tried to access the file "%s" in the request.files '
-               'dictionary but it does not exist.  The mimetype for the request '
-               'is "%s" instead of "multipart/form-data" which means that no '
-               'file contents were transmitted.  To fix this error you should '
-               'provide enctype="multipart/form-data" in your form.' %
-               (key, request.mimetype)]
+        buf = [f'You tried to access the file "{key}" in the request.files dictionary but it does not exist.  The mimetype for the request is "{request.mimetype}" instead of "multipart/form-data" which means that no file contents were transmitted.  To fix this error you should provide enctype="multipart/form-data" in your form.']
         if form_matches:
             buf.append('\n\nThe browser instead transmitted some file names. '
                        'This was submitted: %s' % ', '.join('"%s"' % x
@@ -56,9 +51,7 @@ class FormDataRoutingRedirect(AssertionError):
 
     def __init__(self, request):
         exc = request.routing_exception
-        buf = ['A request was sent to this URL (%s) but a redirect was '
-               'issued automatically by the routing system to "%s".'
-               % (request.url, exc.new_url)]
+        buf = [f'A request was sent to this URL ({request.url}) but a redirect was issued automatically by the routing system to "{exc.new_url}".']
 
         # In case just a slash was appended we can be extra helpful
         if request.base_url + '/' == exc.new_url.split('?')[0]:
@@ -67,10 +60,7 @@ class FormDataRoutingRedirect(AssertionError):
                        'with the trailing slash if it was accessed '
                        'without one.')
 
-        buf.append('  Make sure to directly send your %s-request to this URL '
-                   'since we can\'t make browsers or HTTP clients redirect '
-                   'with form data reliably or without user interaction.' %
-                   request.method)
+        buf.append(f"  Make sure to directly send your {request.method}-request to this URL since we can't make browsers or HTTP clients redirect with form data reliably or without user interaction.")
         buf.append('\n\nNote: this exception is only raised in debug mode')
         AssertionError.__init__(self, ''.join(buf).encode('utf-8'))
 
@@ -95,16 +85,16 @@ def attach_enctype_error_multidict(request):
 
 
 def _dump_loader_info(loader):
-    yield 'class: %s.%s' % (type(loader).__module__, type(loader).__name__)
+    yield f"class: {type(loader).__module__}.{type(loader).__name__}"
     for key, value in sorted(loader.__dict__.items()):
         if key.startswith('_'):
             continue
         if isinstance(value, (tuple, list)):
             if not all(isinstance(x, (str, text_type)) for x in value):
                 continue
-            yield '%s:' % key
+            yield f"{key}:"
             for item in value:
-                yield '  - %s' % item
+                yield f"  - {item}"
             continue
         elif not isinstance(value, (str, text_type, int, float, bool)):
             continue
@@ -113,7 +103,7 @@ def _dump_loader_info(loader):
 
 def explain_template_loading_attempts(app, template, attempts):
     """This should help developers understand what failed"""
-    info = ['Locating template "%s":' % template]
+    info = [f'Locating template "{template}":']
     total_found = 0
     blueprint = None
     reqctx = _request_ctx_stack.top
@@ -122,10 +112,9 @@ def explain_template_loading_attempts(app, template, attempts):
 
     for idx, (loader, srcobj, triple) in enumerate(attempts):
         if isinstance(srcobj, Flask):
-            src_info = 'application "%s"' % srcobj.import_name
+            src_info = f'application "{srcobj.import_name}"'
         elif isinstance(srcobj, Blueprint):
-            src_info = 'blueprint "%s" (%s)' % (srcobj.name,
-                                                srcobj.import_name)
+            src_info = f'blueprint "{srcobj.name}" ({srcobj.import_name})'
         else:
             src_info = repr(srcobj)
 
@@ -133,14 +122,14 @@ def explain_template_loading_attempts(app, template, attempts):
             idx + 1, src_info))
 
         for line in _dump_loader_info(loader):
-            info.append('       %s' % line)
+            info.append(f"       {line}")
 
         if triple is None:
             detail = 'no match'
         else:
             detail = 'found (%r)' % (triple[1] or '<string>')
             total_found += 1
-        info.append('       -> %s' % detail)
+        info.append(f"       -> {detail}")
 
     seems_fishy = False
     if total_found == 0:
@@ -151,8 +140,7 @@ def explain_template_loading_attempts(app, template, attempts):
         seems_fishy = True
 
     if blueprint is not None and seems_fishy:
-        info.append('  The template was looked up from an endpoint that '
-                    'belongs to the blueprint "%s".' % blueprint)
+        info.append(f'  The template was looked up from an endpoint that belongs to the blueprint "{blueprint}".')
         info.append('  Maybe you did not place a template in the right folder?')
         info.append('  See http://flask.pocoo.org/docs/blueprints/#templates')
 

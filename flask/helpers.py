@@ -623,8 +623,7 @@ def send_file(filename_or_fp, mimetype=None, as_attachment=False,
                 ) & 0xffffffff
             ))
         except OSError:
-            warn('Access %s failed, maybe it does not exist, so ignore etags in '
-                 'headers' % filename, stacklevel=2)
+            warn(f"Access {filename} failed, maybe it does not exist, so ignore etags in headers", stacklevel=2)
 
     if conditional:
         try:
@@ -751,13 +750,7 @@ def get_root_path(import_name):
         # namespace package.  In this case we pick the root path from the
         # first module that is contained in our package.
         if filepath is None:
-            raise RuntimeError('No root path can be found for the provided '
-                               'module "%s".  This can happen because the '
-                               'module came from an import hook that does '
-                               'not provide file name information or because '
-                               'it\'s a namespace package.  In this case '
-                               'the root path needs to be explicitly '
-                               'provided.' % import_name)
+            raise RuntimeError(f'No root path can be found for the provided module "{import_name}".  This can happen because the module came from an import hook that does not provide file name information or because it\'s a namespace package.  In this case the root path needs to be explicitly provided.')
 
     # filepath is import_name.py for a module, or __init__.py for a package.
     return os.path.dirname(os.path.abspath(filepath))

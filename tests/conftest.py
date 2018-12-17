@@ -121,7 +121,7 @@ def limit_loader(request, monkeypatch):
 
         def __getattr__(self, name):
             if name in ('archive', 'get_filename'):
-                msg = 'Mocking a loader which does not have `%s.`' % name
+                msg = f"Mocking a loader which does not have `{name}.`"
                 raise AttributeError(msg)
             return getattr(self.loader, name)
 

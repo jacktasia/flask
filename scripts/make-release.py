@@ -67,11 +67,7 @@ def set_filename_version(filename, version_number, pattern):
         return before + version_number + after
 
     with open(filename) as f:
-        contents = re.sub(
-            r"^(\s*%s\s*=\s*')(.+?)(')" % pattern,
-            inject_version, f.read(),
-            flags=re.DOTALL | re.MULTILINE
-        )
+        contents = re.sub(f"^(\\s*{pattern}\\s*=\\s*')(.+?)(')", inject_version, f.read(), flags=re.DOTALL | re.MULTILINE)
 
     if not changed:
         fail('Could not find %s in %s', pattern, filename)

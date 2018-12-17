@@ -281,7 +281,7 @@ class TestJSON(object):
         class MyEncoder(flask.json.JSONEncoder):
             def default(self, o):
                 if isinstance(o, X):
-                    return '<%d>' % o.val
+                    return f"<{o.val}>"
                 return flask.json.JSONEncoder.default(self, o)
 
         class MyDecoder(flask.json.JSONDecoder):
@@ -314,7 +314,7 @@ class TestJSON(object):
         class MyEncoder(flask.json.JSONEncoder):
             def default(self, o):
                 if isinstance(o, X):
-                    return '<%d>' % o.val
+                    return f"<{o.val}>"
 
                 return flask.json.JSONEncoder.default(self, o)
 
@@ -649,7 +649,7 @@ class TestSendfile(object):
         rv = flask.send_file('static/index.html', as_attachment=True, attachment_filename=filename)
         rv.close()
         content_disposition = rv.headers['Content-Disposition']
-        assert 'filename=%s' % ascii in content_disposition
+        assert f"filename={ascii}" in content_disposition
         if utf8:
             assert "filename*=UTF-8''" + utf8 in content_disposition
         else:
@@ -759,7 +759,7 @@ class TestUrlFor(object):
             def get(self, id=None):
                 if id is None:
                     return 'List'
-                return 'Get %d' % id
+                return f"Get {id}"
 
             def post(self):
                 return 'Create'

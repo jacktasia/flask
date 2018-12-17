@@ -460,9 +460,4 @@ class RequestContext(object):
             reraise(exc_type, exc_value, tb)
 
     def __repr__(self):
-        return '<%s \'%s\' [%s] of %s>' % (
-            self.__class__.__name__,
-            self.request.url,
-            self.request.method,
-            self.app.name,
-        )
+        return f"<{self.__class__.__name__} '{self.request.url}' [{self.request.method}] of {self.app.name}>"

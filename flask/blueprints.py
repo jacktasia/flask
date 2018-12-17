@@ -76,8 +76,7 @@ class BlueprintSetupState(object):
         defaults = self.url_defaults
         if 'defaults' in options:
             defaults = dict(defaults, **options.pop('defaults'))
-        self.app.add_url_rule(rule, '%s.%s' % (self.blueprint.name, endpoint),
-                              view_func, defaults=defaults, **options)
+        self.app.add_url_rule(rule, f"{self.blueprint.name}.{endpoint}", view_func, defaults=defaults, **options)
 
 
 class Blueprint(_PackageBoundObject):

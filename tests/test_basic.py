@@ -1825,7 +1825,7 @@ def test_subdomain_matching():
 
     @app.route('/', subdomain='<user>')
     def index(user):
-        return 'index for %s' % user
+        return f"index for {user}"
 
     rv = client.get('/', 'http://mitsuhiko.localhost.localdomain/')
     assert rv.data == b'index for mitsuhiko'
@@ -1838,7 +1838,7 @@ def test_subdomain_matching_with_ports():
 
     @app.route('/', subdomain='<user>')
     def index(user):
-        return 'index for %s' % user
+        return f"index for {user}"
 
     rv = client.get('/', 'http://mitsuhiko.localhost.localdomain:3000/')
     assert rv.data == b'index for mitsuhiko'
@@ -1908,12 +1908,12 @@ def test_run_server_port(monkeypatch, app):
 
     # Mocks werkzeug.serving.run_simple method
     def run_simple_mock(hostname, port, application, *args, **kwargs):
-        rv['result'] = 'running on %s:%s ...' % (hostname, port)
+        rv['result'] = f"running on {hostname}:{port} ..."
 
     monkeypatch.setattr(werkzeug.serving, 'run_simple', run_simple_mock)
     hostname, port = 'localhost', 8000
     app.run(hostname, port, debug=True)
-    assert rv['result'] == 'running on %s:%s ...' % (hostname, port)
+    assert rv['result'] == f"running on {hostname}:{port} ..."
 
 
 @pytest.mark.parametrize('host,port,expect_host,expect_port', (

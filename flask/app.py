@@ -1217,8 +1217,7 @@ class Flask(_PackageBoundObject):
         if view_func is not None:
             old_func = self.view_functions.get(endpoint)
             if old_func is not None and old_func != view_func:
-                raise AssertionError('View function mapping is overwriting an '
-                                     'existing endpoint function: %s' % endpoint)
+                raise AssertionError(f"View function mapping is overwriting an existing endpoint function: {endpoint}")
             self.view_functions[endpoint] = view_func
 
     def route(self, rule, **options):
@@ -1754,10 +1753,7 @@ class Flask(_PackageBoundObject):
 
         .. versionadded:: 0.8
         """
-        self.logger.error('Exception on %s [%s]' % (
-            request.path,
-            request.method
-        ), exc_info=exc_info)
+        self.logger.error(f"Exception on {request.path} [{request.method}]", exc_info=exc_info)
 
     def raise_routing_exception(self, request):
         """Exceptions that are recording during routing are reraised with
